@@ -1,0 +1,38 @@
+{
+  "family": "knok-websocket-pri-task",
+  "taskRoleArn": "arn:aws:iam::257120632536:role/knokTaskRoleWithS3", 
+  "executionRoleArn": "arn:aws:iam::257120632536:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "knok-websocket",
+      "image": "257120632536.dkr.ecr.ap-northeast-2.amazonaws.com/knok-websocket:websocket-19994478375d812155b56687497dbfd6bcf01122",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8001,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
+        { "name": "AWS_AUDIO_BUCKET_NAME", "value": "live-stt" },
+        { "name": "AWS_REGION", "value": "${AWS_REGION}" },
+        { "name": "AWS_SECRET_ACCESS_KEY", "value": "${AWS_SECRET_ACCESS_KEY}" },
+        { "name": "DJANGO_API_URL", "value": "https://api.ai-knok.com/api/save_transcribed_text/" }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/knok-websocket-pri-task",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

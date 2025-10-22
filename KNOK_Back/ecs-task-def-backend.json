@@ -1,0 +1,76 @@
+{
+  "family": "knok-back-pri-task",
+  "taskRoleArn": "arn:aws:iam::257120632536:role/knokTaskRoleWithS3",
+  "executionRoleArn": "arn:aws:iam::257120632536:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "containerDefinitions": [
+    {
+      "name": "knok-backend",
+      "image": "257120632536.dkr.ecr.ap-northeast-2.amazonaws.com/knok-backend:backend-19994478375d812155b56687497dbfd6bcf01122",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "AWS_REGION", "value": "${AWS_REGION}" },
+        { "name": "DB_PORT", "value": "3306" },
+        { "name": "DB_USER", "value": "admin" },
+        { "name": "DB_PASSWORD", "value": "${DB_PASSWORD}" },
+        { "name": "DB_NAME", "value": "knokdb" },
+        { "name": "DB_HOST", "value": "knok-user.cf2g0cse0fyt.ap-northeast-2.rds.amazonaws.com" },
+        { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
+        { "name": "AWS_SECRET_ACCESS_KEY", "value": "${AWS_SECRET_ACCESS_KEY}" },
+        { "name": "AWS_AUDIO_BUCKET_NAME", "value": "live-stt" },
+        { "name": "AWS_STORAGE_BUCKET_NAME", "value": "knok-resume-upload" },
+        { "name": "AWS_CLIP_VIDEO_BUCKET_NAME", "value": "knok-clip-video" },
+        { "name": "AWS_FULL_VIDEO_BUCKET_NAME", "value": "knok-full-video" },
+        { "name": "AWS_FOLLOWUP_QUESTION_BUCKET_NAME", "value": "knok-followup-questions" },
+        { "name": "AWS_S3_REGION_NAME", "value": "${AWS_REGION}" },
+        { "name": "TTS_BUCKET_NAME", "value": "knok-tts" },
+        { "name": "COGNITO_USER_POOL_ID", "value": "ap-northeast-2_kJUsqNcRW" },
+        { "name": "COGNITO_APP_CLIENT_ID", "value": "126j419a8sf0pot0obuvduh25a" },
+        { "name": "COGNITO_APP_CLIENT_SECRET", "value": "${COGNITO_APP_CLIENT_SECRET}" },
+        { "name": "DJANGO_SETTINGS_MODULE", "value": "config.settings" },
+        { "name": "CLOUDFRONT_KEY_PAIR_ID", "value": "K4N22H8XT57MX"},
+        { "name": "CLOUDFRONT_DOMAIN", "value": "https://d1wycbn3ncvxc0.cloudfront.net"},
+        { "name": "CLOUDFRONT_SECRET_NAME", "value": "knok/cloudfront/private-key"},
+        { "name": "AWS_XRAY_DAEMON_ADDRESS", "value": "127.0.0.1:2000" },
+        { "name": "AWS_SIMPLE_QUEUE_SERVICE", "value": "https://sqs.ap-northeast-2.amazonaws.com/257120632536/tts-request-queue.fifo" }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/knok-back-pri-task",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    },
+    {
+      "name": "xray-daemon",
+      "image": "257120632536.dkr.ecr.ap-northeast-2.amazonaws.com/knok-xray-daemon:3.3.15",
+      "essential": false,
+      "portMappings": [
+        {
+          "containerPort": 2000,
+          "protocol": "udp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/knok-xray",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "xray-backend"
+        }
+      }
+    }
+  ]
+}

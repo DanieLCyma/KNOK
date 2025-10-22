@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* target & module */
+    "target": "ES2020",
+    "module": "ESNext",
+
+    /* 라이브러리 */
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    /* JSX: React 17+ 자동 변환 */
+    "jsx": "react-jsx",
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* 엄격 모드 */
+    "strict": true,
+
+    /* 불필요한 선언 체크 (import React 제거 후 남아 있는 unused 오류만 꺼두기) */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+
+    /* 모듈 해석 */
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    /* 경로 별칭 설정 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["node"]
+  },        
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+} 
